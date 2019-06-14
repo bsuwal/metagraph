@@ -11,6 +11,10 @@
         href="https://fonts.googleapis.com/css?family=Playfair+Display:700|Lora:400,400i,700|Source+Sans+Pro:300,400"
         rel="stylesheet"
     />
+  <link rel="icon" 
+      type="image/png" 
+      href="https://mggg.org/metagraph/favicon.ico"
+  />
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
     integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
@@ -103,7 +107,7 @@
     <p>
       We are doing a <strong>random walk</strong> on the metagraph. Each plan is represented by a
       node in the
-      metagraph. Every second, the walk takes a random step to one of the neighbors of the current
+      metagraph. Every half-second, the walk takes a random step to one of the neighbors of the current
       plan. This algorithm
       is remarkable for three important reasons. The first is its simplicity&mdash;the demo above
       is running live off
@@ -189,14 +193,12 @@
       grid, but fundamentally
       the idea of the random walk is the same. When you change the details of how you conduct the
       random walk,
-      you change the "stationary distribution"&mdash;in other words, it alters the weight that
-      tells you how likely
-      each plan is to come up if you were were to walk for a very long time.
+      you change the "stationary distribution" of the walk&mdash;in other words, it changes the probability of seeing any particular plan after you do the random walk for a long time.
       The scientific community is currently spending lots of energy to understand the
       details of how to conduct these walks to come to the strongest conclusions
-      about the universe of redistricting possibilities.  In the next page, we examine a 
+      about the universe of redistricting possibilities.  <!-- In the next page, we examine a 
       richer model of determining election outcomes and demonstrate the use of MCMC for 
-      <em>optimization</em>, rather than simply <em>sampling</em>.
+      <em>optimization</em>, rather than simply <em>sampling</em>. -->
     </p>
   </main>
 
