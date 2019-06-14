@@ -57,7 +57,7 @@
 
     <main>
       <p>
-        Now let's consider how to redistrict a 5x5 grid into 5 rook-contiguous
+        Now let's consider how to redistrict a 5x5 grid into 5 contiguous
         districts of 5 units each. (Gridlandia has grown!) There are 4006
         districting plans $\mathcal D$ that satisfy these criteria, and we can
         construct the metagraph in the same way as
@@ -72,9 +72,9 @@
       <h3>A local view of the metagraph</h3>
       <p>
         Click on a plan in the local metagraph (at right) to put it in the
-        center and study its 2-neighborhood. (That is, you see all the plans
+        center and study its 2-neighborhood. That is, you see all the plans
         within two swaps. Note that we're not showing the connections between
-        the neighbors, but only how they relate to the center node.)
+        the neighbors, but only how they relate to the center node.
         Alternatively, use the panel on the left to build a districting plan
         $\mathcal D$ from scratch, one district at a time, and jump directly to
         it. You can change the vote distribution $\Delta$ by clicking the units
@@ -118,8 +118,7 @@
         Since there are 4006 possible districting plans, it's hard to use such a
         zoomed-in view to get a good sense of the universe of possibilities.
         Furthermore, there are $2^{25}=33,554,432$ possible voting
-        distributions, even before we allow units to split their votes, since
-        each of the 25 units can go for either party. For a particular vote
+        distributions where each square is either a <span class="hearts">Hearts</span> square or a <span class="clubs">Clubs</span> square. For a particular vote
         distribution $\Delta$, we might happen to be in an area of the metagraph
         where many plans give the <span class="hearts">Hearts</span> Party the
         majority of seats, even though globally the
@@ -137,8 +136,18 @@
         as before. Finally, there are two histograms.
       </p>
 
+
+
       <p>
-        The first histogram fixes your districting plan but varies the vote
+        The first histogram shows how many
+        <span class="hearts">Hearts</span> seats your distribution gives over
+        all 4006 possible districting plans. The number of
+        <span class="hearts">Hearts</span> seats in your selected plan is
+        indicated by the <span class="blue">Blue</span> bar.
+      </p>
+
+          <p>
+        The second histogram fixes your districting plan but varies the vote
         distribution over all the possibilities with the same proportion of
         voters for each party. (For instance, if your $\Delta$ has 9
         <span class="clubs">Clubs</span> units, then it is compared against the
@@ -148,13 +157,6 @@
         is indicated by the <span class="green">Green</span> bar.
       </p>
 
-      <p>
-        The second histogram shows how many
-        <span class="hearts">Hearts</span> seats your distribution gives over
-        all 4006 possible districting plans. The number of
-        <span class="hearts">Hearts</span> seats in your selected plan is
-        indicated by the <span class="blue">Blue</span> bar.
-      </p>
 
       <div id="chart2" class="chart three-columns">
         <div>
