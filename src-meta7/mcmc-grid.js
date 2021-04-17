@@ -5,16 +5,73 @@ var distfills = [
   "#bbf90f",
   "#6a79f7",
   "#475f94",
-  "#13eac9"
+  "#13eac9",
+  "#008000",
+  "#800000",
+  "#800080"
 ];
 
-var square7 = 40;
+
+var saffron = [2, 3, 4, 5, 6, 7,
+               19,
+               20, 22, 23, 24, 25, 29,
+               31, 32, 35, 36, 37,
+               40, 41, 47, 49,
+               50, 54, 59,
+               60, 62, 63, 64, 66,
+               70, 72, 79,
+               80, 84, 85, 89,
+               93, 98, 99
+             ];
+
+
+square_side = 10
+var square7 = 32;
 var square7sm = square7 / 1.25;
 square7 = square7sm;
-var square7sRow = 7;
-var square7sColumn = 7;
+var square10sRow = 10;
+var square10sColumn = 10;
 red_this = 0;
-var cur_plan_str = "4455511445551144566114376661337766233772223377222";
+
+function initialize_plan(grid_side) {
+  plan = []
+  for (let i = 1; i < grid_side + 1; i++) {
+    for (let j = 0; j < grid_side; j++) {
+      plan.push(i);
+    }
+  }
+  return plan;
+}
+
+function initialize_plan_to_zeros(grid_side) {
+  plan = []
+  for (let i = 0; i < grid_side * grid_side; i++) {
+      plan.push(0);
+  }
+  return plan;
+}
+
+curr_plan = initialize_plan(square_side)
+var curr_color = 1
+
+function compute_edges(grid_side) {
+  var edges = []
+  // row edges
+  for (let i = 0; i < grid_side; i++) {
+    for (let j = 0; j < grid_side-1; j++) {
+      edges.push([grid_side * i + j, grid_side * i + j + 1]);
+    }
+  }
+  // col edges
+  for (let i = 0; i < grid_side-1; i++) {
+    for (let j = 0; j < grid_side; j++) {
+      edges.push([grid_side * i + j, (grid_side * (i + 1)) + j]);
+    }
+  }
+  return edges;
+}
+
+edges = compute_edges(square_side);
 
 cell_cols = [
   0,
@@ -218,89 +275,122 @@ var parties = [-1, 1];
 
 var gap = 2;
 
-var grd = d3
-  .select("#current-delta")
+
+var voter_colors = ["#FBB917", "#C48793"];
+
+// loop over number of columns
+for (let n = 0; n < 1; n++) {
+
+  var voter_grid = d3
+    .select("#voter-d")
+    .append("svg")
+    .attr("width", (square7 + gap) * 2 + gap)
+    .attr("height", (square7 + gap) * 1 + gap + 20);
+
+    var rows = voter_grid
+      .selectAll("rect" + " .row-" + (n + 1))
+      .data(d3.range(2))
+      .enter()
+      .append("rect")
+
+      .attr("class", function(d, i) {
+        return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
+      })
+      .attr("id", function(d, i) {
+        return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
+      })
+      .attr("width", square7sm)
+      .attr("height", square7sm)
+      .attr("x", function(d, i) {
+        return (square7 + gap) * i + gap;
+      })
+      .attr("y", (square7 + gap) * n + gap)
+      .style("fill", function(d, i) {
+        return voter_colors[i];
+      })
+      .style("stroke", "#555")
+      .style("stroke-width", 1)
+
+      .on("mouseover", function(d) {
+        //d3.select(this).style("stroke", "#000");
+        d3.select(this).style("stroke-width", "3");
+      })
+
+      .on("mouseout", function(d) {
+        d3.select(this).style("stroke", "#555");
+        d3.select(this).style("stroke-width", "1");
+      });
+  }
+
+  // loop over number of columns
+  for (let n = 0; n < 1; n++) {
+    // create each set of rows
+    var rows = voter_grid
+      .selectAll("rect" + " .row-" + (n + 1))
+      .data(d3.range(square_side))
+      .enter()
+      .append("rect")
+
+      .attr("class", function(d, i) {
+        return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
+      })
+      .attr("id", function(d, i) {
+        return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
+      })
+      .attr("width", square7sm)
+      .attr("height", square7sm)
+      .attr("x", function(d, i) {
+        return (square7 + gap) * i + gap;
+      })
+      .attr("y", (square7 + gap) * n + gap)
+      .style("fill", function(d, i) {
+        return voter_colors[i];
+      })
+      .style("stroke", "#555")
+      .style("stroke-width", 1)
+
+      .on("mouseover", function(d) {
+        //d3.select(this).style("stroke", "#000");
+        d3.select(this).style("stroke-width", "3");
+      })
+
+      .on("mouseout", function(d) {
+        d3.select(this).style("stroke", "#555");
+        d3.select(this).style("stroke-width", "1");
+      });
+  }
+
+//// Bhushan
+
+// loop over number of columns
+for (let n = 0; n < 1; n++) {
+
+var color_grid = d3
+  .select("#color-d")
   .append("svg")
-  .attr("width", (square7 + gap) * 7 + gap)
-  .attr("height", (square7 + gap) * 7 + gap);
+  .attr("width", (square7 + gap) * square_side + gap)
+  .attr("height", (square7 + gap) * 1 + gap + 20);
 
-var chk = "";
-var dist1 = 0;
-var dist2 = 0;
-var dist3 = 0;
-var dist4 = 0;
-var dist5 = 0;
-var cnt = 0;
-
-var ptmp = 0;
-var pinit = [];
-
-// loop over number of columns
-for (let n = 0; n < square7sColumn; n++) {
-  // create each set of rows
-  var rows = grd
-    .selectAll("text" + " .row-" + (n + 1))
-    .data(d3.range(square7sRow))
-    .enter()
-    .append("text")
-
-    .attr("class", function(d, i) {
-      return "square7 row-" + (n + 1) + " " + "col-" + (i + 1);
-    })
-    .attr("id", function(d, i) {
-      return "s-" + (n + 1) + (i + 1);
-    })
-    .attr("width", square7)
-    .attr("height", square7)
-    .attr("x", function(d, i) {
-      return (square7 + gap) * i + square7 / 2 + gap;
-    })
-    .attr("y", (square7 + gap) * n + square7 / 2 + gap)
-
-    .attr("party", function(d, i) {
-      return party_init[4 * n + i];
-    })
-    .style("fill", function(d) {
-      return simp_fill[1 + parseInt(d3.select(this).attr("party"))];
-    })
-
-    .text(function(d) {
-      return simp_char[1 + parseInt(d3.select(this).attr("party"))];
-    })
-    .attr("text-anchor", "middle")
-    .attr("dy", ".35em")
-    .style("font-size", function(d) {
-      return square7 - 7 + "px";
-    });
-}
-
-// loop over number of columns
-for (let n = 0; n < square7sColumn; n++) {
-  // create each set of rows
-  var rows = grd
+  var rows = color_grid
     .selectAll("rect" + " .row-" + (n + 1))
-    .data(d3.range(square7sRow))
+    .data(d3.range(square_side))
     .enter()
     .append("rect")
 
     .attr("class", function(d, i) {
-      return "square7 row-" + (n + 1) + " " + "col-" + (i + 1);
+      return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
     })
     .attr("id", function(d, i) {
-      return "s-" + (n + 1) + (i + 1);
+      return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
     })
-    .attr("width", square7)
-    .attr("height", square7)
+    .attr("width", square7sm)
+    .attr("height", square7sm)
     .attr("x", function(d, i) {
       return (square7 + gap) * i + gap;
     })
     .attr("y", (square7 + gap) * n + gap)
-
-    .attr("party", function(d, i) {
-      return party_init[4 * n + i];
-    })
-    .style("fill", function(d) {
-      return simp_fill[1 + parseInt(d3.select(this).attr("party"))];
+    .style("fill", function(d, i) {
+      return distfills[i];
     })
     .style("stroke", "#555")
     .style("stroke-width", 1)
@@ -313,35 +403,127 @@ for (let n = 0; n < square7sColumn; n++) {
     .on("mouseout", function(d) {
       d3.select(this).style("stroke", "#555");
       d3.select(this).style("stroke-width", "1");
-    })
-
-    .on("click", function(d) {
-      clsq = true;
-      do_update2(this);
-
-      //update_textboxes();
     });
 }
-var grd2 = d3
-  .select("#current-d")
-  .append("svg")
-  .attr("width", (square7 + gap) * 7 + gap)
-  .attr("height", (square7 + gap) * 7 + gap);
 
 // loop over number of columns
-for (let n = 0; n < square7sColumn; n++) {
+for (let n = 0; n < 1; n++) {
   // create each set of rows
-  var rows = grd2
+  var rows = color_grid
     .selectAll("rect" + " .row-" + (n + 1))
-    .data(d3.range(square7sRow))
+    .data(d3.range(square_side))
     .enter()
     .append("rect")
 
     .attr("class", function(d, i) {
-      return "square7 row-" + (n + 1) + " " + "col-" + (i + 1);
+      return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
     })
     .attr("id", function(d, i) {
-      return "s-" + (n + 1) + (i + 1);
+      return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
+    })
+    .attr("width", square7sm)
+    .attr("height", square7sm)
+    .attr("x", function(d, i) {
+      return (square7 + gap) * i + gap;
+    })
+    .attr("y", (square7 + gap) * n + gap)
+    .style("fill", function(d, i) {
+      return distfills[i];
+    })
+    .style("stroke", "#555")
+    .style("stroke-width", 1)
+
+    .on("click", function(d) {
+      var ix = d3
+        .select(this)
+        .attr("id")
+        .slice(5, 7);
+      curr_color = parseInt(ix);
+    })
+
+    .on("mouseover", function(d) {
+      //d3.select(this).style("stroke", "#000");
+      d3.select(this).style("stroke-width", "3");
+    })
+
+    .on("mouseout", function(d) {
+      d3.select(this).style("stroke", "#555");
+      d3.select(this).style("stroke-width", "1");
+    });
+}
+
+var grd = d3
+ .select("#pop-d")
+ .append("svg")
+ .attr("width", (square7 + gap) * square_side + gap)
+ .attr("height", (square7 + gap) * square_side + gap);
+
+// loop over number of columns
+for (let n = 0; n < square10sColumn; n++) {
+ // create each set of rows
+ var rows = grd
+   .selectAll("rect" + " .row-" + stringify_num(n + 1))
+   .data(d3.range(square10sRow))
+   .enter()
+   .append("rect")
+
+   .attr("class", function(d, i) {
+     return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
+   })
+   .attr("id", function(d, i) {
+     return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
+   })
+   .attr("width", square7sm)
+   .attr("height", square7sm)
+   .attr("x", function(d, i) {
+     return (square7 + gap) * i + gap;
+   })
+   .attr("y", (square7 + gap) * n + gap)
+   .attr("district", function(d, i) {
+     return curr_plan[square_side * n + i];
+   })
+   .style("fill", function(d, i) {
+     if (saffron.includes(square_side * n + (i + 1) - 1)) {
+       return "#FBB917"
+     }
+     else {
+       return "#C48793"
+     }
+   })
+   .style("stroke", "#555")
+   .style("stroke-width", 1)
+
+   .on("mouseover", function(d) {
+     //d3.select(this).style("stroke", "#000");
+     d3.select(this).style("stroke-width", "3");
+   })
+
+   .on("mouseout", function(d) {
+     d3.select(this).style("stroke", "#555");
+     d3.select(this).style("stroke-width", "1");
+   });
+}
+
+var grd2 = d3
+  .select("#current-d")
+  .append("svg")
+  .attr("width", (square7 + gap) * square_side + gap)
+  .attr("height", (square7 + gap) * square_side + gap);
+
+// loop over number of columns
+for (let n = 0; n < square10sColumn; n++) {
+  // create each set of rows
+  var rows = grd2
+    .selectAll("rect" + " .row-" + stringify_num(n + 1))
+    .data(d3.range(square10sRow))
+    .enter()
+    .append("rect")
+
+    .attr("class", function(d, i) {
+      return "square7 row-" + stringify_num(n + 1) + " " + "col-" + stringify_num(i + 1);
+    })
+    .attr("id", function(d, i) {
+      return "s-" + stringify_num(n + 1) + " " + stringify_num(i + 1);
     })
     .attr("width", square7sm)
     .attr("height", square7sm)
@@ -350,68 +532,32 @@ for (let n = 0; n < square7sColumn; n++) {
     })
     .attr("y", (square7 + gap) * n + gap)
     .attr("district", function(d, i) {
-      return cur_plan_str[7 * n + i];
+      return curr_plan[square_side * n + i];
     })
     .style("fill", function(d, i) {
-      return distfills[cur_plan_str[7 * n + i] - 1];
+      return distfills[curr_plan[square_side * n + i] - 1];
     })
     .style("stroke", "#555")
     .style("stroke-width", 1)
 
     .on("click", function(d) {
-      var cd = parseInt(d3.select(this).attr("district"));
-      var ix = d3
+      // var cd = parseInt(d3.select(this).attr("district"));
+      var r = d3
         .select(this)
         .attr("id")
         .slice(2, 4);
-      ix = (parseInt(ix[0]) - 1) * 7 + (parseInt(ix[1]) - 1);
-      if (cd == 7) {
-        cur_plan_str = setCharAt(cur_plan_str, ix, 1);
-      } else {
-        cur_plan_str = setCharAt(cur_plan_str, ix, cd + 1);
-      }
-      can_chain = is_conn(cur_plan_str);
-
-      if (can_chain) {
-        go_btn.html("Sample with MCMC");
-        go_btn.classed("disabled", false);
-      } else {
-        go_btn.html("Current plan is invalid");
-        go_btn.classed("disabled", true);
-      }
-
-      update_dists();
-      d3.select(this).attr("district", function(e) {
-        return cd == 7 ? 1 : cd + 1;
-      });
-    })
-    .on("contextmenu", function(d) {
-      d3.event.preventDefault();
-
-      var cd = parseInt(d3.select(this).attr("district"));
-      var ix = d3
+      var c = d3
         .select(this)
         .attr("id")
-        .slice(2, 4);
-      ix = (parseInt(ix[0]) - 1) * 7 + (parseInt(ix[1]) - 1);
-      if (cd == 1) {
-        cur_plan_str = setCharAt(cur_plan_str, ix, 7);
-      } else {
-        cur_plan_str = setCharAt(cur_plan_str, ix, cd - 1);
-      }
-      can_chain = is_conn(cur_plan_str);
+        .slice(5, 7);
+
+      ix = (parseInt(r) - 1) * square_side + (parseInt(c) - 1);
+
+      curr_plan[ix] = curr_color;
       update_dists();
       d3.select(this).attr("district", function(e) {
-        return cd == 1 ? 7 : cd - 1;
+        return curr_color;
       });
-
-      if (can_chain) {
-        go_btn.html("Sample with MCMC");
-        go_btn.classed("disabled", false);
-      } else {
-        go_btn.html("Current plan is invalid");
-        go_btn.classed("disabled", true);
-      }
     })
     .on("mouseover", function(d) {
       //d3.select(this).style("stroke", "#000");
@@ -426,82 +572,62 @@ for (let n = 0; n < square7sColumn; n++) {
 
 var go_button_g = grd2.append("svg").attr("height", 10 * square7);
 
-var randomDButton = d3.select("#random-d").on("click", function(d) {
-  if (!is_conn(cur_plan_str)) {
-    cur_plan_str = "4455511445551144566114376661337766233772223377222";
-  }
+var clearDButton = d3.select("#clear-d").on("click", function(d) {
+    curr_plan = initialize_plan_to_zeros(square_side)
+    // cur_plan_str = "0000000000000000000000000000000000000000000000000";
+    grd2.selectAll("rect").each(function(d) {
+      var nm = d3.select(this).attr("id");
+      var r = d3
+        .select(this)
+        .attr("id")
+        .slice(2, 4);
+      var c = d3
+        .select(this)
+        .attr("id")
+        .slice(5, 7);
+      if (nm != null) {
+        d3.select(this).style("fill", function() {
+          return "#FFFFFF";
+        });
+      }
+    });
+    grid_borders();
+});
 
+var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
+    num_cut_edges = 0
+    districts = new Set()
+    // district_pops = {}
+    for (let i = 0; i < edges.length; i++) {
+      edge = edges[i];
+      if (curr_plan[edge[0]] !=  curr_plan[edge[1]]) {
+        num_cut_edges += 1
+      }
+      districts.add(curr_plan[edge[0]]);
+      districts.add(curr_plan[edge[1]]);
+
+    }
+    if (districts.size != square_side) {
+        document.getElementById("ce").innerHTML = "Incomplete map!";
+    }
+    else {
+        document.getElementById("ce").innerHTML = num_cut_edges;
+    }
+
+    // console.log(num_cut_edges);
+});
+
+var randomDButton = d3.select("#random-d").on("click", function(d) {
+  if (!is_conn(curr_plan)) {
+    curr_plan = initialize_plan(square_side)
+  }
   var counter = 0;
   while (counter < 200) {
     counter += 1;
-    cur_plan_str = swap_cells(cur_plan_str);
+    cur_plan = swap_cells(curr_plan);
   }
 
   update_dists();
-
-  can_chain = is_conn(cur_plan_str);
-
-  if (can_chain) {
-    go_btn.html("Sample with MCMC");
-    go_btn.classed("disabled", false);
-  } else {
-    go_btn.html("Current plan is invalid");
-    go_btn.classed("disabled", true);
-  }
-});
-
-var go_btn = d3.select("#go-button").on("click", function(d) {
-  if (!can_chain) {
-    return;
-  }
-  var oldsv = (" " + cur_plan_str).slice(1);
-  var samples = [];
-  var histo = [0, 0, 0, 0, 0, 0, 0, 0];
-
-  temph = [0, 0, 0, 0, 0, 0, 0];
-  var c = 0;
-  for (var i = 0; i < 49; i++) {
-    temph[parseInt(cur_plan_str[i]) - 1] += parseInt(cell_cols[i]);
-  }
-  for (var i = 0; i < 7; i++) {
-    if (temph[i] > 0) {
-      c += 1;
-    }
-  }
-  red_this = c;
-
-  while (samples.length < 1000) {
-    cur_plan_str = swap_cells(cur_plan_str);
-
-    if (samples.length % 100 == 0) {
-    }
-
-    var already = false;
-    for (var i = 0; i < samples.length; i++) {
-      if (samples[i] == cur_plan_str) {
-        already = true;
-      }
-    }
-    if (!already) {
-      temph = [0, 0, 0, 0, 0, 0, 0];
-      var c = 0;
-      for (var i = 0; i < 49; i++) {
-        temph[parseInt(cur_plan_str[i]) - 1] += parseInt(cell_cols[i]);
-      }
-      for (var i = 0; i < 7; i++) {
-        if (temph[i] > 0) {
-          c += 1;
-        }
-      }
-      histo[c] += 1;
-
-      samples.push((" " + cur_plan_str).slice(1));
-    }
-  }
-
-  cur_plan_str = (" " + oldsv).slice(1);
-  update_dists();
-  update_histo(histo);
 });
 
 function grid_borders() {
@@ -510,35 +636,46 @@ function grid_borders() {
   grd.selectAll("rect").each(function() {
     if (d3.select(this).attr("button") == null) {
       var nm = d3.select(this).attr("id");
+      var r = d3
+        .select(this)
+        .attr("id")
+        .slice(2, 4);
+      var c = d3
+        .select(this)
+        .attr("id")
+        .slice(5, 7);
+      r = parseInt(r);
+      c = parseInt(c);
+
       var cr = d3.select(this);
-      if (nm[2] == 1) {
+      if (parseInt(r) == 1) {
         grd
           .append("line")
           .attr("x1", parseFloat(cr.attr("x") - 1))
           .attr(
             "x2",
-            square7 + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+            square7 + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
           )
           .attr("y1", parseFloat(cr.attr("y")))
           .attr("y2", parseFloat(cr.attr("y")))
           .style("stroke-width", 2)
           .attr("stroke", "#333");
-      } else if (nm[2] == 7) {
+      } else if (parseInt(r) == square_side) {
         grd
           .append("line")
           .attr("x1", parseFloat(cr.attr("x") - 1))
           .attr(
             "x2",
-            square7 + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+            square7 + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
           )
           .attr("y1", square7 + parseFloat(cr.attr("y")))
           .attr("y2", square7 + parseFloat(cr.attr("y")))
           .style("stroke-width", 2)
           .attr("stroke", "#333");
       } else {
-        var cellchar = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1)];
-        var checkcell_up = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) - 7];
-        var checkcell_dn = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) + 7];
+        var cellchar = curr_plan[square_side * (r - 1) + (c - 1)];
+        var checkcell_up = curr_plan[square_side * (r - 1) + (c - 1) - square_side];
+        var checkcell_dn = curr_plan[square_side * (r - 1) + (c - 1) + square_side];
 
         if (cellchar != checkcell_up) {
           grd
@@ -546,20 +683,20 @@ function grid_borders() {
             .attr("x1", parseFloat(cr.attr("x") - 1))
             .attr(
               "x2",
-              square7 + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+              square7 + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
             )
             .attr("y1", parseFloat(cr.attr("y") - 1))
             .attr("y2", parseFloat(cr.attr("y") - 1))
             .style("stroke-width", 2)
             .attr("stroke", "#333");
         }
-        if (cellchar != checkcell_dn && nm[2] == 6) {
+        if (cellchar != checkcell_dn && r == square_side-1) {
           grd
             .append("line")
             .attr("x1", parseFloat(cr.attr("x") - 1))
             .attr(
               "x2",
-              square7 + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+              square7 + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
             )
             .attr("y1", square7 + (parseFloat(cr.attr("y")) + 1))
             .attr("y2", square7 + (parseFloat(cr.attr("y")) + 1))
@@ -568,7 +705,7 @@ function grid_borders() {
         }
       }
 
-      if (nm[3] == 1) {
+      if (parseInt(c) == 1) {
         grd
           .append("line")
           .attr("x1", parseFloat(cr.attr("x")))
@@ -576,11 +713,11 @@ function grid_borders() {
           .attr("y1", parseFloat(cr.attr("y") - 1))
           .attr(
             "y2",
-            square7 + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+            square7 + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
           )
           .style("stroke-width", 2)
           .attr("stroke", "#333");
-      } else if (nm[3] == 7) {
+      } else if (c == square_side) {
         grd
           .append("line")
           .attr("x1", square7 + parseFloat(cr.attr("x")))
@@ -588,14 +725,14 @@ function grid_borders() {
           .attr("y1", parseFloat(cr.attr("y")) - 1)
           .attr(
             "y2",
-            square7 + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+            square7 + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
           )
           .style("stroke-width", 2)
           .attr("stroke", "#333");
       } else {
-        var cellchar = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1)];
-        var checkcell_lf = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) - 1];
-        var checkcell_rt = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) + 1];
+        var cellchar = curr_plan[square_side * (r - 1) + (c - 1)];
+        var checkcell_lf = curr_plan[square_side * (r - 1) + (c - 1) - 1];
+        var checkcell_rt = curr_plan[square_side * (r - 1) + (c - 1) + 1];
 
         if (cellchar != checkcell_lf) {
           grd
@@ -605,12 +742,12 @@ function grid_borders() {
             .attr("y1", parseFloat(cr.attr("y") - 1))
             .attr(
               "y2",
-              square7 + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+              square7 + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
             )
             .style("stroke-width", 2)
             .attr("stroke", "#333");
         }
-        if (cellchar != checkcell_rt && nm[3] == 6) {
+        if (cellchar != checkcell_rt && c == square_side-1) {
           grd
             .append("line")
             .attr("x1", square7 + (parseFloat(cr.attr("x")) + 1.7))
@@ -618,7 +755,7 @@ function grid_borders() {
             .attr("y1", parseFloat(cr.attr("y")) - 1)
             .attr(
               "y2",
-              square7 + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+              square7 + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
             )
             .style("stroke-width", 2)
             .attr("stroke", "#333");
@@ -631,36 +768,47 @@ function grid_borders() {
 
   grd2.selectAll("rect").each(function() {
     var nm = d3.select(this).attr("id");
+    var r = d3
+      .select(this)
+      .attr("id")
+      .slice(2, 4);
+    var c = d3
+      .select(this)
+      .attr("id")
+      .slice(5, 7);
+    r = parseInt(r);
+    c = parseInt(c);
+
     var cr = d3.select(this);
     if (nm != null) {
-      if (nm[2] == 1) {
+      if (r == 1) {
         grd2
           .append("line")
           .attr("x1", parseFloat(cr.attr("x") - 1))
           .attr(
             "x2",
-            square7sm + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+            square7sm + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
           )
           .attr("y1", parseFloat(cr.attr("y")))
           .attr("y2", parseFloat(cr.attr("y")))
           .style("stroke-width", 2)
           .attr("stroke", "#333");
-      } else if (nm[2] == 7) {
+      } else if (r == square_side) {
         grd2
           .append("line")
           .attr("x1", parseFloat(cr.attr("x") - 1))
           .attr(
             "x2",
-            square7sm + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+            square7sm + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
           )
           .attr("y1", square7sm + parseFloat(cr.attr("y")))
           .attr("y2", square7sm + parseFloat(cr.attr("y")))
           .style("stroke-width", 2)
           .attr("stroke", "#333");
       } else {
-        var cellchar = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1)];
-        var checkcell_up = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) - 7];
-        var checkcell_dn = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) + 7];
+        var cellchar = curr_plan[square_side * (r - 1) + (c - 1)];
+        var checkcell_up = curr_plan[square_side * (r - 1) + (c - 1) - square_side];
+        var checkcell_dn = curr_plan[square_side * (r - 1) + (c - 1) + square_side];
 
         if (cellchar != checkcell_up) {
           grd2
@@ -668,20 +816,20 @@ function grid_borders() {
             .attr("x1", parseFloat(cr.attr("x") - 1))
             .attr(
               "x2",
-              square7sm + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+              square7sm + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
             )
             .attr("y1", parseFloat(cr.attr("y") - 1))
             .attr("y2", parseFloat(cr.attr("y") - 1))
             .style("stroke-width", 2)
             .attr("stroke", "#333");
         }
-        if (cellchar != checkcell_dn && nm[2] == 6) {
+        if (cellchar != checkcell_dn && r == square_side-1) {
           grd2
             .append("line")
             .attr("x1", parseFloat(cr.attr("x") - 1))
             .attr(
               "x2",
-              square7sm + (parseFloat(cr.attr("x")) + 1 + (nm[3] == 7 ? 0 : 1))
+              square7sm + (parseFloat(cr.attr("x")) + 1 + (c == square_side ? 0 : 1))
             )
             .attr("y1", square7sm + (parseFloat(cr.attr("y")) + 1))
             .attr("y2", square7sm + (parseFloat(cr.attr("y")) + 1))
@@ -690,7 +838,7 @@ function grid_borders() {
         }
       }
 
-      if (nm[3] == 1) {
+      if (c == 1) {
         grd2
           .append("line")
           .attr("x1", parseFloat(cr.attr("x")))
@@ -698,11 +846,11 @@ function grid_borders() {
           .attr("y1", parseFloat(cr.attr("y") - 1))
           .attr(
             "y2",
-            square7sm + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+            square7sm + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
           )
           .style("stroke-width", 2)
           .attr("stroke", "#333");
-      } else if (nm[3] == 7) {
+      } else if (c == square_side) {
         grd2
           .append("line")
           .attr("x1", square7sm + parseFloat(cr.attr("x")))
@@ -710,14 +858,14 @@ function grid_borders() {
           .attr("y1", parseFloat(cr.attr("y")) - 1)
           .attr(
             "y2",
-            square7sm + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+            square7sm + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
           )
           .style("stroke-width", 2)
           .attr("stroke", "#333");
       } else {
-        var cellchar = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1)];
-        var checkcell_lf = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) - 1];
-        var checkcell_rt = cur_plan_str[7 * (nm[2] - 1) + (nm[3] - 1) + 1];
+        var cellchar = curr_plan[square_side * (r - 1) + (c - 1)];
+        var checkcell_lf = curr_plan[square_side * (r - 1) + (c - 1) - 1];
+        var checkcell_rt = curr_plan[square_side * (r - 1) + (c - 1) + 1];
 
         if (cellchar != checkcell_lf) {
           grd2
@@ -727,12 +875,12 @@ function grid_borders() {
             .attr("y1", parseFloat(cr.attr("y") - 1))
             .attr(
               "y2",
-              square7sm + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+              square7sm + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
             )
             .style("stroke-width", 2)
             .attr("stroke", "#333");
         }
-        if (cellchar != checkcell_rt && nm[3] == 6) {
+        if (cellchar != checkcell_rt && c == square_side-1) {
           grd2
             .append("line")
             .attr("x1", square7sm + (parseFloat(cr.attr("x")) + 1.7))
@@ -740,7 +888,7 @@ function grid_borders() {
             .attr("y1", parseFloat(cr.attr("y")) - 1)
             .attr(
               "y2",
-              square7sm + (parseFloat(cr.attr("y")) + 1 + (nm[2] == 7 ? 0 : 1))
+              square7sm + (parseFloat(cr.attr("y")) + 1 + (r == square_side ? 0 : 1))
             )
             .style("stroke-width", 2)
             .attr("stroke", "#333");
@@ -825,22 +973,37 @@ function do_update2(r) {
 }
 
 function update_dists() {
+  // updates the colors
   grd2.selectAll("rect").each(function(d) {
     var nm = d3.select(this).attr("id");
+    var r = d3
+      .select(this)
+      .attr("id")
+      .slice(2, 4);
+    var c = d3
+      .select(this)
+      .attr("id")
+      .slice(5, 7);
+
     if (nm != null) {
-      var ix =
-        parseInt(cur_plan_str[7 * parseInt(nm[2] - 1) + parseInt(nm[3]) - 1]) -
-        1;
-      d3.select(this).style("fill", function() {
-        return distfills[ix];
-      });
+      var ix = parseInt(curr_plan[square_side * (parseInt(r) - 1) + parseInt(c) - 1] - 1);
+
+      if (ix  == -1) {
+        d3.select(this).style("fill", function() {
+          return "#FFFFFF";
+        });
+      } else {
+        d3.select(this).style("fill", function() {
+          return distfills[ix];
+        });
+      }
     }
   });
   grid_borders();
 }
 
 function is_conn(s) {
-  for (var d = 1; d <= 7; d++) {
+  for (var d = 1; d <= square_side; d++) {
     var seen = [];
     var to_check = [];
     var first = -1;
@@ -864,21 +1027,21 @@ function is_conn(s) {
       }
       if (!already) {
         seen.push(currnode);
-        if (s[currnode + 1] == d && currnode % 7 != 6) {
+        if (s[currnode + 1] == d && currnode % square_side != square_side-1) {
           to_check.push(currnode + 1);
         }
-        if (s[currnode - 1] == d && currnode % 7 != 0) {
+        if (s[currnode - 1] == d && currnode % square_side != 0) {
           to_check.push(currnode - 1);
         }
-        if (s[currnode + 7] == d) {
-          to_check.push(currnode + 7);
+        if (s[currnode + square_side] == d) {
+          to_check.push(currnode + square_side);
         }
-        if (s[currnode - 7] == d) {
-          to_check.push(currnode - 7);
+        if (s[currnode - square_side] == d) {
+          to_check.push(currnode - square_side);
         }
       }
     }
-    if (!(seen.length == 7)) {
+    if (!(seen.length == square_side)) {
       return false;
     }
   }
@@ -893,18 +1056,22 @@ function setCharAt(str, index, chr) {
 
 function swap_cells(s) {
   var val = false;
-  var string_copy = (" " + s).slice(1);
+  // var string_copy = (" " + s).slice(1);
   while (!val) {
-    string_copy = (" " + s).slice(1);
-    var i1 = Math.floor(Math.random() * 49);
-    var i2 = Math.floor(Math.random() * 49);
+    // string_copy = (" " + s).slice(1);
+    var i1 = Math.floor(Math.random() * square_side * square_side);
+    var i2 = Math.floor(Math.random() * square_side * square_side);
 
-    var c1 = string_copy[i1];
-    var c2 = string_copy[i2];
+    // var c1 = string_copy[i1];
+    // var c2 = string_copy[i2];
+    var c1 = s[i1];
+    var c2 = s[i2];
 
     if (c1 != c2) {
-      string_copy = setCharAt(string_copy, i1, c2);
-      string_copy = setCharAt(string_copy, i2, c1);
+      s[i1] = c2;
+      s[i2] = c1;
+      // string_copy = setCharAt(string_copy, i1, c2);
+      // string_copy = setCharAt(string_copy, i2, c1);
 
       val = is_conn(string_copy);
     }
@@ -979,3 +1146,12 @@ randomDeltaButton.on("click", function(d) {
     }
   });
 });
+
+function stringify_num(num) {
+  str = num.toString();
+  if (str.length == 1) {
+    return "0" + str;
+  } else if (str.length == 2) {
+    return str
+  }
+}
