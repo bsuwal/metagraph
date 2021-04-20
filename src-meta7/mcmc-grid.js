@@ -634,7 +634,7 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
     for (let i = 0; i < square_side * square_side; i++) {
       districts[curr_plan[i]-1].push(i)
     }
-    //bhushan
+
     // orange seats
     orange_seats = 0
     tied_seats = 0
@@ -681,11 +681,11 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
       contiguitys.push(contiguous(districts[i]))
       // break
     }
-    console.log(contiguitys)
-    console.log(districts)
-    console.log(curr_plan)
-    console.log(contiguitys.reduce((a, b) => a + b, 0) == square_side)
-    console.log(contiguitys.reduce((a, b) => a + b, 0))
+    // console.log(contiguitys)
+    // console.log(districts)
+    // console.log(curr_plan)
+    // console.log(contiguitys.reduce((a, b) => a + b, 0) == square_side)
+    // console.log(contiguitys.reduce((a, b) => a + b, 0))
 
     document.getElementById("orange_seats").innerHTML = "Orange Seats: " + orange_seats;
     document.getElementById("tied_seats").innerHTML = "Tied Seats: " + tied_seats;
@@ -798,7 +798,6 @@ function contiguous(arr) {
   to_visit.push(arr[0])
 
   while (to_visit.length != 0) {
-      console.log("to_visit: " + to_visit)
       i = to_visit.pop()
       component.add(i)
       for (const dir of dirs) {
@@ -817,7 +816,7 @@ function contiguous(arr) {
         }
       }
   }
-  return component.length == arr.size
+  return component.size == arr.length
 }
 
 var randomDButton = d3.select("#random-d").on("click", function(d) {
