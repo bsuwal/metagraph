@@ -668,7 +668,7 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
     perims = perimeters(districts);
     popos = []
     for (let i = 0; i < square_side; i++) {
-      popos.push(4 * Math.PI * square_side / perims[i])
+      popos.push(4 * Math.PI * square_side / (perims[i] ** 2))
     }
     avg_popo = popos.reduce((a, b) => a + b, 0) / popos.length
 
@@ -679,12 +679,18 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
     contiguitys = []
     for (let i = 0; i < square_side; i++) {
       contiguitys.push(contiguous(districts[i]))
+      // break
     }
+    console.log(contiguitys)
+    console.log(districts)
+    console.log(curr_plan)
+    console.log(contiguitys.reduce((a, b) => a + b, 0) == square_side)
+    console.log(contiguitys.reduce((a, b) => a + b, 0))
 
     document.getElementById("orange_seats").innerHTML = "Orange Seats: " + orange_seats;
     document.getElementById("tied_seats").innerHTML = "Tied Seats: " + tied_seats;
     document.getElementById("pink_seats").innerHTML = "Pink Seats: " + pink_seats;
-    document.getElementById("orange_score").innerHTML = "Orange Score: " + parseInt(orange_seats + tied_seats * 0.5);
+    document.getElementById("orange_score").innerHTML = "Orange Score: " + parseFloat(orange_seats + tied_seats * 0.5);
     document.getElementById("competitive_seats").innerHTML = "Competitive Seats: " + competitive_seats;
     document.getElementById("safe_seats").innerHTML = "Safe Seats: " + safe_seats;
     document.getElementById("popo_avg").innerHTML = "Average PoPo: " + avg_popo.toFixed(3);
@@ -755,51 +761,63 @@ function max_pop_deviation(districts) {
 }
 
 // change everything in arr where arr[i] = x to be arr[i] = y
-function change_value_in_arr(arr, x, y) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] == x) {
-      arr[i] = y
-    }
-  }
-}
+// function change_value_in_arr(arr, x, y) {
+//   for (let i = 0; i < arr.length; i++) {
+//     if (arr[i] == x) {
+//       arr[i] = y
+//     }
+//   }
+// }
 
-// iterate over arr
-// for each square
-// is a neighbor in the same dist?
-// if yes, change both of them to be whatever is the max, then adjust the arr
-// if no, discontiguous
-// in the end, if all the vals in arr is not the same, discontiguous
+// function vicinity_max(i) {
+//   dirs = ["u", "d", "l", "r"]
+//   vicinity_in_dist = []
+//   for (const dir of dirs) {
+//     if (out_of_bounds(i, dir)) {
+//       continue;
+//     } else {
+//       if (dir == "u" && curr_plan[i] == curr_plan[i - 10]) {
+//         vicinity_in_dist.push(i - 10);
+//       } else if (dir == "d" && curr_plan[i] == curr_plan[i + 10]) {
+//         vicinity_in_dist.push(i + 10);
+//       } else if (dir == "l" && curr_plan[i] == curr_plan[i - 1]) {
+//         vicinity_in_dist.push(i - 1);
+//       } else if (dir == "r" && curr_plan[i] == curr_plan[i + 1]) {
+//         vicinity_in_dist.push(i + 1);
+//       }
+//     }
+//   }
+//   vicinity_in_dist.push(i)
+//   return Math.max.apply(null, vicinity_in_dist)
+// }
 
 function contiguous(arr) {
-  comp_arr = []
-  for (i = 0; i < arr.length; i++) {
-    comp_arr[i] = arr[i];
-  }
+  to_visit = []
+  component = new Set()
+  dirs = ["u", "d", "l", "r"]
+  to_visit.push(arr[0])
 
-  for (let i = 0; i < arr.length; i++) {
-    // up
-    if (curr_plan[arr[i]] == curr_plan[arr[i] - 10]) {
-      change_value_in_arr(comp_arr, arr[i] - 10, arr[i])
-    }
-    // down
-    if (curr_plan[arr[i]] == curr_plan[arr[i] + 10]) {
-      change_value_in_arr(comp_arr, arr[i], arr[i] + 10)
-    }
-    // left
-    if (curr_plan[arr[i]] == curr_plan[arr[i] - 1]) {
-      change_value_in_arr(comp_arr, arr[i] - 1, arr[i])
-    }
-    // right
-    if (curr_plan[arr[i]] == curr_plan[arr[i] - 1]) {
-      change_value_in_arr(comp_arr, arr[i] - 1, arr[i])
-    }
+  while (to_visit.length != 0) {
+      console.log("to_visit: " + to_visit)
+      i = to_visit.pop()
+      component.add(i)
+      for (const dir of dirs) {
+        if (out_of_bounds(i, dir)) {
+          continue
+        } else {
+          if (dir == "u" && curr_plan[i] == curr_plan[i - 10] && !component.has(i - 10)) {
+            to_visit.push(i - 10);
+          } else if (dir == "d" && curr_plan[i] == curr_plan[i + 10] && !component.has(i + 10)) {
+            to_visit.push(i + 10);
+          } else if (dir == "l" && curr_plan[i] == curr_plan[i - 1] && !component.has(i - 1)) {
+            to_visit.push(i - 1);
+          } else if (dir == "r" && curr_plan[i] == curr_plan[i + 1] && !component.has(i + 1)) {
+            to_visit.push(i + 1);
+          }
+        }
+      }
   }
-
-  if (comp_arr.reduce((a, b) => a + b, 0) / comp_arr.length == Math.max.apply(null, comp_arr)) {
-    return true
-  } else {
-    return false
-  }
+  return component.length == arr.size
 }
 
 var randomDButton = d3.select("#random-d").on("click", function(d) {
