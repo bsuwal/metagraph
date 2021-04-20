@@ -44,6 +44,7 @@ function initialize_plan(grid_side) {
 }
 
 function initialize_plan_to_zeros(grid_side) {
+  districts = {}
   plan = []
   for (let i = 0; i < grid_side * grid_side; i++) {
       plan.push(0);
@@ -311,15 +312,15 @@ for (let n = 0; n < 1; n++) {
       .style("stroke", "#555")
       .style("stroke-width", 1)
 
-      .on("mouseover", function(d) {
-        //d3.select(this).style("stroke", "#000");
-        d3.select(this).style("stroke-width", "3");
-      })
+      // .on("mouseover", function(d) {
+      //   d3.select(this).style("stroke", "#000");
+      //   d3.select(this).style("stroke-width", "3");
+      // })
 
-      .on("mouseout", function(d) {
-        d3.select(this).style("stroke", "#555");
-        d3.select(this).style("stroke-width", "1");
-      });
+      // .on("mouseout", function(d) {
+      //   d3.select(this).style("stroke", "#555");
+      //   d3.select(this).style("stroke-width", "1");
+      // });
   }
 
   // loop over number of columns
@@ -349,18 +350,16 @@ for (let n = 0; n < 1; n++) {
       .style("stroke", "#555")
       .style("stroke-width", 1)
 
-      .on("mouseover", function(d) {
-        //d3.select(this).style("stroke", "#000");
-        d3.select(this).style("stroke-width", "3");
-      })
-
-      .on("mouseout", function(d) {
-        d3.select(this).style("stroke", "#555");
-        d3.select(this).style("stroke-width", "1");
-      });
+      // .on("mouseover", function(d) {
+      //   //d3.select(this).style("stroke", "#000");
+      //   d3.select(this).style("stroke-width", "3");
+      // })
+      //
+      // .on("mouseout", function(d) {
+      //   d3.select(this).style("stroke", "#555");
+      //   d3.select(this).style("stroke-width", "1");
+      // });
   }
-
-//// Bhushan
 
 // loop over number of columns
 for (let n = 0; n < 1; n++) {
@@ -395,6 +394,11 @@ var color_grid = d3
     .style("stroke", "#555")
     .style("stroke-width", 1)
 
+    .on("click", function(d) {
+      d3.select(this).style("stroke-width", "3");
+      d3.select(this).attr("stroke", "#333")
+    })
+
     .on("mouseover", function(d) {
       //d3.select(this).style("stroke", "#000");
       d3.select(this).style("stroke-width", "3");
@@ -404,6 +408,7 @@ var color_grid = d3
       d3.select(this).style("stroke", "#555");
       d3.select(this).style("stroke-width", "1");
     });
+
 }
 
 // loop over number of columns
@@ -439,6 +444,9 @@ for (let n = 0; n < 1; n++) {
         .attr("id")
         .slice(5, 7);
       curr_color = parseInt(ix);
+      //bhushan
+      // d3.select(this).style("stroke-width", "3");
+      // d3.select(this).attr("stroke", "#333")
     })
 
     .on("mouseover", function(d) {
@@ -450,6 +458,7 @@ for (let n = 0; n < 1; n++) {
       d3.select(this).style("stroke", "#555");
       d3.select(this).style("stroke-width", "1");
     });
+
 }
 
 var grd = d3
@@ -493,15 +502,15 @@ for (let n = 0; n < square10sColumn; n++) {
    .style("stroke", "#555")
    .style("stroke-width", 1)
 
-   .on("mouseover", function(d) {
-     //d3.select(this).style("stroke", "#000");
-     d3.select(this).style("stroke-width", "3");
-   })
+   // .on("mouseover", function(d) {
+   //   //d3.select(this).style("stroke", "#000");
+   //   d3.select(this).style("stroke-width", "3");
+   // })
 
-   .on("mouseout", function(d) {
-     d3.select(this).style("stroke", "#555");
-     d3.select(this).style("stroke-width", "1");
-   });
+   // .on("mouseout", function(d) {
+   //   d3.select(this).style("stroke", "#555");
+   //   d3.select(this).style("stroke-width", "1");
+   // });
 }
 
 var grd2 = d3
@@ -574,7 +583,6 @@ var go_button_g = grd2.append("svg").attr("height", 10 * square7);
 
 var clearDButton = d3.select("#clear-d").on("click", function(d) {
     curr_plan = initialize_plan_to_zeros(square_side)
-    // cur_plan_str = "0000000000000000000000000000000000000000000000000";
     grd2.selectAll("rect").each(function(d) {
       var nm = d3.select(this).attr("id");
       var r = d3
@@ -594,28 +602,205 @@ var clearDButton = d3.select("#clear-d").on("click", function(d) {
     grid_borders();
 });
 
+var downloadButton = d3.select("#download").on("click", function(d) {
+    document.getElementById("cut-edges").click()
+    exportToJsonFile(districts)
+});
+
 var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
+    // cut edges
     num_cut_edges = 0
-    districts = new Set()
-    // district_pops = {}
+    dists = new Set()
     for (let i = 0; i < edges.length; i++) {
       edge = edges[i];
       if (curr_plan[edge[0]] !=  curr_plan[edge[1]]) {
         num_cut_edges += 1
       }
-      districts.add(curr_plan[edge[0]]);
-      districts.add(curr_plan[edge[1]]);
-
+      dists.add(curr_plan[edge[0]]);
+      dists.add(curr_plan[edge[1]]);
     }
-    if (districts.size != square_side) {
+    if (dists.size != square_side) {
         document.getElementById("ce").innerHTML = "Incomplete map!";
     }
     else {
-        document.getElementById("ce").innerHTML = num_cut_edges;
+        document.getElementById("ce").innerHTML = "Cut Edges: " + num_cut_edges;
     }
 
-    // console.log(num_cut_edges);
+    // initialize and populate districts
+    districts = []
+    for (let i = 0; i < square_side; i++) {
+      districts.push([])
+    }
+    for (let i = 0; i < square_side * square_side; i++) {
+      districts[curr_plan[i]-1].push(i)
+    }
+    //bhushan
+    // orange seats
+    orange_seats = 0
+    tied_seats = 0
+    pink_seats = 0
+    competitive_seats = 0
+    safe_seats = 0
+    comp_range = [4, 5, 6]
+    safe_range = [8, 9, 10]
+
+    for (let i = 0; i < square_side; i++) {
+      orange_count = 0;
+      for (let j = 0; j < square_side; j++) {
+        orange_count += saffron.includes(districts[i][j]);
+      }
+      if (orange_count >= square_side/2 + 1) {
+        orange_seats += 1
+      } else if (orange_count == square_side/2) {
+        tied_seats += 1
+      } else {
+        pink_seats += 1
+      }
+
+      if (comp_range.includes(orange_count)) {
+        competitive_seats += 1
+      }
+      if (safe_range.includes(orange_count)) {
+        safe_seats += 1
+      }
+    }
+
+    perims = perimeters(districts);
+    popos = []
+    for (let i = 0; i < square_side; i++) {
+      popos.push(4 * Math.PI * square_side / perims[i])
+    }
+    avg_popo = popos.reduce((a, b) => a + b, 0) / popos.length
+
+    // max pop deviation
+    max_pop_dev= max_pop_deviation(districts)
+
+    // contiguity
+    contiguitys = []
+    for (let i = 0; i < square_side; i++) {
+      contiguitys.push(contiguous(districts[i]))
+    }
+
+    document.getElementById("orange_seats").innerHTML = "Orange Seats: " + orange_seats;
+    document.getElementById("tied_seats").innerHTML = "Tied Seats: " + tied_seats;
+    document.getElementById("pink_seats").innerHTML = "Pink Seats: " + pink_seats;
+    document.getElementById("orange_score").innerHTML = "Orange Score: " + parseInt(orange_seats + tied_seats * 0.5);
+    document.getElementById("competitive_seats").innerHTML = "Competitive Seats: " + competitive_seats;
+    document.getElementById("safe_seats").innerHTML = "Safe Seats: " + safe_seats;
+    document.getElementById("popo_avg").innerHTML = "Average PoPo: " + avg_popo.toFixed(3);
+    document.getElementById("max_pop_dev").innerHTML = "Maximum Pop Deviation: " + max_pop_dev;
+    document.getElementById("contiguity").innerHTML = "Contiguous: " + (contiguitys.reduce((a, b) => a + b, 0) == square_side);
 });
+
+function exportToJsonFile(jsonData) {
+    let dataStr = JSON.stringify(jsonData);
+    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+    let exportFileDefaultName = 'districts.json';
+
+    let linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+
+function out_of_bounds(number, dir) {
+  if ((number - 10 < 0 && dir == "u") ||
+      (number % 10 == 0 && dir == "l") ||
+      (number + 10 > 99 && dir == "d") ||
+      (number % 10 == 9 && dir == "r")) {
+        return true
+      }
+  return false
+}
+
+function perimeters(districts) {
+  dirs = ["u", "d", "l", "r"]
+  perims = []
+
+  for (let i = 0; i < square_side; i++) {
+    perim = 0
+    for (let j = 0; j < square_side; j++) {
+      for (const dir of dirs) {
+        if (out_of_bounds(districts[i][j], dir)) {
+          perim += 1;
+          continue;
+        }
+        // check side to see if in same dist
+        if (dir == "u" && !districts[i].includes(districts[i][j] - 10)) {
+          perim += 1;
+        } else if (dir == "l" && !districts[i].includes(districts[i][j] - 1)) {
+          perim += 1;
+        } else if (dir == "r" && !districts[i].includes(districts[i][j] + 1)) {
+          perim += 1;
+        } else if (dir == "d" && !districts[i].includes(districts[i][j] + 10)) {
+          perim += 1;
+        }
+      }
+    }
+    perims.push(perim)
+  }
+  return perims;
+}
+
+function max_pop_deviation(districts) {
+  max = 0
+  for (let i = 0; i < square_side; i++) {
+    dev = Math.abs(districts[i].length - square_side)
+    if (dev > max) {
+      max = dev
+    }
+  }
+  return max / square_side
+}
+
+// change everything in arr where arr[i] = x to be arr[i] = y
+function change_value_in_arr(arr, x, y) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] == x) {
+      arr[i] = y
+    }
+  }
+}
+
+// iterate over arr
+// for each square
+// is a neighbor in the same dist?
+// if yes, change both of them to be whatever is the max, then adjust the arr
+// if no, discontiguous
+// in the end, if all the vals in arr is not the same, discontiguous
+
+function contiguous(arr) {
+  comp_arr = []
+  for (i = 0; i < arr.length; i++) {
+    comp_arr[i] = arr[i];
+  }
+
+  for (let i = 0; i < arr.length; i++) {
+    // up
+    if (curr_plan[arr[i]] == curr_plan[arr[i] - 10]) {
+      change_value_in_arr(comp_arr, arr[i] - 10, arr[i])
+    }
+    // down
+    if (curr_plan[arr[i]] == curr_plan[arr[i] + 10]) {
+      change_value_in_arr(comp_arr, arr[i], arr[i] + 10)
+    }
+    // left
+    if (curr_plan[arr[i]] == curr_plan[arr[i] - 1]) {
+      change_value_in_arr(comp_arr, arr[i] - 1, arr[i])
+    }
+    // right
+    if (curr_plan[arr[i]] == curr_plan[arr[i] - 1]) {
+      change_value_in_arr(comp_arr, arr[i] - 1, arr[i])
+    }
+  }
+
+  if (comp_arr.reduce((a, b) => a + b, 0) / comp_arr.length == Math.max.apply(null, comp_arr)) {
+    return true
+  } else {
+    return false
+  }
+}
 
 var randomDButton = d3.select("#random-d").on("click", function(d) {
   if (!is_conn(curr_plan)) {
