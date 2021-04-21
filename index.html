@@ -29,7 +29,8 @@
 
 <body>
   <div class="banner">
-    <a href="/">
+    <h1 style="margin: 0 10rem">Squaretopia</h1>
+    <a target="_blank" rel="noopener noreferrer" href="https:mggg.org">
       <img class="logo" src="logo.svg" alt="Metric Geometry and Gerrymandering Group">
     </a>
   </div>
@@ -39,36 +40,67 @@
 
   <main>
     <div id="gridspace" class="chart rows">
+      <p>The map consists of 100 small squares, </p>
+      <p> 40% orange and 60% pink </p>
+      <br>
+      <p><b>Your job</b>: Divide the big square into 10 contiguous, compact districts of 10 small squares each.</p>
+      <br>
       <div style="display: flex; flex-direction: row; flex-wrap: row; align-items: flex-start; margin-bottom: 2rem;">
         <div class="grid-container" style="margin: 0 2rem">
-          <h4>Voter Distribution</h4>
+          <h4>The voters</h4>
           <div id="voter-d" class="grid"></div>
           <div id="pop-d" class="grid"></div>
         </div>
         <div class="grid-container" style="margin: 0 2rem">
-          <h4>Design a plan $\mathcal D$</h4>
+          <h4>The districts</h4>
           <div id="color-d" class="grid"></div>
           <div id="current-d" class="grid"></div>
           <!-- <button id="random-d">Randomize $\mathcal D$</button> -->
-          <button id="clear-d">Clear $\mathcal D$</button>
+          <button id="evaluate" style="margin: 1 2rem">Evaluate</button>
+          <button id="download" style="margin: 0 2rem">Download Plan</button>
+          <button id="clear-d">Clear</button>
         </div>
       </div>
-      <div style="display: flex; flex-direction: row; flex-wrap: row; align-items: flex-start; margin-bottom: 2rem;">
-        <button id="cut-edges" style="margin: 0 2rem">Evaluate</button>
-        <button id="download" style="margin: 0 2rem">Download Plan</button>
+      <h4>The stats</h4>
+      <div style="display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 2rem;">
+        <div id="basics" style="display:inline-block;margin-right:100px">
+          <h4>Basics</h4>
+          <hr>
+          <h4 id="complete">Complete: </h4>
+          <h4 id="max_pop_dev">Max Pop Deviation: </h4>
+          <h4 id="contiguity">Contiguous: </h4>
+        </div>
+        <div id="compactness" style="display:inline-block;margin-right:100px">
+          <h4>Compactness</h4>
+          <hr>
+          <h4 id="popo_avg">Average PoPo: </h4>
+          <h4 id="ce">Cut-Edges: </h4>
+        </div>
+        <div id="outcome-metrics" style="display:inline-block">
+          <h4>Outcome Metrics</h4>
+          <hr>
+          <h4 id="pink_seats">Pink Majority Districts: </h4>
+          <h4 id="orange_seats">Orange Majority Districts: </h4>
+          <h4 id="tied_seats">Tied Districts: </h4>
+          <h4 id="competitive_seats">Competitive Districts: </h4>
+          <h4 id="safe_seats">Safe Districts: </h4>
+          <h4 id="orange_score">Orange Seat Share: </h4>
+        </div>
       </div>
-
-      <h4 id="ce"></h4>
-      <h4 id="orange_seats"></h4>
-      <h4 id="pink_seats"></h4>
-      <h4 id="tied_seats"></h4>
-      <h4 id="orange_score"></h4>
-      <h4 id="competitive_seats"></h4>
-      <h4 id="safe_seats"></h4>
-      <h4 id="popo_avg"></h4>
-      <h4 id="max_pop_dev"></h4>
-      <h4 id="contiguity"></h4>
-
+      <div style="margin:100px">
+        <h4>About the metrics</h4>
+          <p><b>Complete</b>: Is every unit assigned?</p>
+          <p><b>Max Pop Deviation</b>: Ideal “population” is 10 units. What’s the most any district deviates from this? (example: a district that has 12 units deviates by 20% from ideal size.)</p>
+          <p><b>Contiguous</b>: Is every district connected?  (Could a chess rook visit the whole district?)</p>
+          <p><b>Average PoPo</b>: What’s the average Polsby-Popper score?  (The Polsby-Popper score of a district is 4πA/P^2.)</p>
+          <p><b>Cut Edges</b>: How many pairs of neighboring units are in different districts?</p>
+          <p><b>Pink Majority Districts</b>: How many districts have more than half pink squares?</p>
+          <p><b>Orange Majority Districts</b>: Likewise for orange.</p>
+          <p><b>Tied Districts</b>: How many districts have an equal split between pink and orange?</p>
+          <p><b>Competitive Districts</b>: How many districts have both colors getting 40-60% of the votes?</p>
+          <p><b>Safe Seats</b>: How many districts have one color with 80-100% of the vote?</p>
+          <p><b>Orange Seat Share</b>: If orange gets full credit for a majority district and half credit for a tie, what is their share of the 10 seats?</p>
+      </div>
     </div>
   </main>
 
