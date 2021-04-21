@@ -33,6 +33,12 @@ var square10sRow = 10;
 var square10sColumn = 10;
 red_this = 0;
 
+// load this function on page load
+window.onload = function() {
+  document.getElementById("evaluate").click();
+  grid_borders();
+};
+
 function initialize_plan(grid_side) {
   plan = []
   for (let i = 1; i < grid_side + 1; i++) {
@@ -444,7 +450,6 @@ for (let n = 0; n < 1; n++) {
         .attr("id")
         .slice(5, 7);
       curr_color = parseInt(ix);
-      //bhushan
       // d3.select(this).style("stroke-width", "3");
       // d3.select(this).attr("stroke", "#333")
     })
@@ -567,6 +572,7 @@ for (let n = 0; n < square10sColumn; n++) {
       d3.select(this).attr("district", function(e) {
         return curr_color;
       });
+      // document.getElementById("evaluate").click();
     })
     .on("mouseover", function(d) {
       //d3.select(this).style("stroke", "#000");
@@ -600,14 +606,25 @@ var clearDButton = d3.select("#clear-d").on("click", function(d) {
       }
     });
     grid_borders();
+    document.getElementById("complete").innerHTML = "Complete: No";
+    document.getElementById("ce").innerHTML = "Cut-Edges: N/A";
+    document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: ";
+    document.getElementById("tied_seats").innerHTML = "Tied Districts: ";
+    document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: ";
+    document.getElementById("orange_score").innerHTML = "Orange Seat Share: ";
+    document.getElementById("competitive_seats").innerHTML = "Competitive Districts: ";
+    document.getElementById("safe_seats").innerHTML = "Safe Districts: ";
+    document.getElementById("popo_avg").innerHTML = "Average PoPo: ";
+    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: ";
+    document.getElementById("contiguity").innerHTML = "Contiguous: ";
 });
 
 var downloadButton = d3.select("#download").on("click", function(d) {
-    document.getElementById("cut-edges").click()
+    document.getElementById("evaluate").click()
     exportToJsonFile(districts)
 });
 
-var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
+var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
     // cut edges
     num_cut_edges = 0
     dists = new Set()
@@ -620,10 +637,22 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
       dists.add(curr_plan[edge[1]]);
     }
     if (dists.size != square_side) {
-        document.getElementById("ce").innerHTML = "Incomplete map!";
+        document.getElementById("complete").innerHTML = "Complete: No";
+        document.getElementById("ce").innerHTML = "Cut-Edges: N/A";
+        document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: N/A";
+        document.getElementById("tied_seats").innerHTML = "Tied Districts: N/A";
+        document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: N/A";
+        document.getElementById("orange_score").innerHTML = "Orange Seat Share: N/A";
+        document.getElementById("competitive_seats").innerHTML = "Competitive Districts: N/A";
+        document.getElementById("safe_seats").innerHTML = "Safe Districts: N/A";
+        document.getElementById("popo_avg").innerHTML = "Average PoPo: N/A";
+        document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: N/A";
+        document.getElementById("contiguity").innerHTML = "Contiguous: N/A";
+        return
     }
     else {
-        document.getElementById("ce").innerHTML = "Cut Edges: " + num_cut_edges;
+        document.getElementById("complete").innerHTML = "Complete: Yes";
+        document.getElementById("ce").innerHTML = "Cut-Edges: " + num_cut_edges;
     }
 
     // initialize and populate districts
@@ -642,7 +671,7 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
     competitive_seats = 0
     safe_seats = 0
     comp_range = [4, 5, 6]
-    safe_range = [8, 9, 10]
+    safe_range = [0, 1, 2, 8, 9, 10]
 
     for (let i = 0; i < square_side; i++) {
       orange_count = 0;
@@ -679,22 +708,16 @@ var computeCutEdgesButton = d3.select("#cut-edges").on("click", function(d) {
     contiguitys = []
     for (let i = 0; i < square_side; i++) {
       contiguitys.push(contiguous(districts[i]))
-      // break
     }
-    // console.log(contiguitys)
-    // console.log(districts)
-    // console.log(curr_plan)
-    // console.log(contiguitys.reduce((a, b) => a + b, 0) == square_side)
-    // console.log(contiguitys.reduce((a, b) => a + b, 0))
 
-    document.getElementById("orange_seats").innerHTML = "Orange Seats: " + orange_seats;
-    document.getElementById("tied_seats").innerHTML = "Tied Seats: " + tied_seats;
-    document.getElementById("pink_seats").innerHTML = "Pink Seats: " + pink_seats;
-    document.getElementById("orange_score").innerHTML = "Orange Score: " + parseFloat(orange_seats + tied_seats * 0.5);
-    document.getElementById("competitive_seats").innerHTML = "Competitive Seats: " + competitive_seats;
-    document.getElementById("safe_seats").innerHTML = "Safe Seats: " + safe_seats;
+    document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: " + orange_seats;
+    document.getElementById("tied_seats").innerHTML = "Tied Districts: " + tied_seats;
+    document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: " + pink_seats;
+    document.getElementById("orange_score").innerHTML = "Orange Seat Share: " + parseFloat(orange_seats + tied_seats * 0.5);
+    document.getElementById("competitive_seats").innerHTML = "Competitive Districts: " + competitive_seats;
+    document.getElementById("safe_seats").innerHTML = "Safe Districts: " + safe_seats;
     document.getElementById("popo_avg").innerHTML = "Average PoPo: " + avg_popo.toFixed(3);
-    document.getElementById("max_pop_dev").innerHTML = "Maximum Pop Deviation: " + max_pop_dev;
+    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: " + max_pop_dev;
     document.getElementById("contiguity").innerHTML = "Contiguous: " + (contiguitys.reduce((a, b) => a + b, 0) == square_side);
 });
 
