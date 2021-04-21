@@ -29,7 +29,7 @@
 
 <body>
   <div class="banner">
-    <h1 style="margin: 0 20rem">Squaretopia</h1>
+    <h1 style="margin: 0 20rem; align: "left"">Squaretopia</h1>
     <a target="_blank" rel="noopener noreferrer" href="https:mggg.org">
       <img class="logo" src="logo.svg" alt="Metric Geometry and Gerrymandering Group">
     </a>
@@ -65,46 +65,47 @@
         <div id="basics" style="display:inline-block;margin-right:100px">
           <h4>&nbsp;</h4>
           <hr>
-          <h4>Basics</h4>
+          <center><b>Basics</b></center>
           <hr>
-          <h4 id="complete">Complete: </h4>
-          <h4 id="max_pop_dev">Max Pop Deviation: </h4>
-          <h4 id="contiguity">Contiguous: </h4>
+          <p id="complete" style="margin: 10px 5px">Complete: </p>
+          <p id="max_pop_dev" style="margin: 10px 5px">Max Pop Deviation: </p>
+          <p id="contiguity" style="margin: 10px 5px">Contiguous: </p>
         </div>
         <div id="compactness" style="display:inline-block;margin-right:100px">
           <h4>The Stats</h4>
           <hr>
-          <h4>Compactness</h4>
+          <center><b>Compactness</b></center>
           <hr>
-          <h4 id="popo_avg">Average PoPo: </h4>
-          <h4 id="ce">Cut-Edges: </h4>
+          <p id="popo_avg" style="margin: 10px 5px">Average PoPo: </p>
+          <p id="ce" style="margin: 10px 5px">Cut-Edges: </p>
         </div>
         <div id="outcome-metrics" style="display:inline-block">
           <h4>&nbsp;</h4>
           <hr>
-          <h4>Outcome Metrics</h4>
+          <center><b>Outcome Metrics</b></center>
           <hr>
-          <h4 id="pink_seats">Pink Majority Districts: </h4>
-          <h4 id="orange_seats">Orange Majority Districts: </h4>
-          <h4 id="tied_seats">Tied Districts: </h4>
-          <h4 id="competitive_seats">Competitive Districts: </h4>
-          <h4 id="safe_seats">Safe Districts: </h4>
-          <h4 id="orange_score">Orange Seat Share: </h4>
+          <p id="pink_seats" style="margin: 10px 5px">Pink Majority Districts: </p>
+          <p id="orange_seats" style="margin: 10px 5px">Orange Majority Districts: </p>
+          <p id="tied_seats" style="margin: 10px 5px">Tied Districts: </p>
+          <p id="competitive_seats" style="margin: 10px 5px">Competitive Districts: </p>
+          <p id="safe_seats" style="margin: 10px 5px">Safe Districts: </p>
+          <p id="orange_score" style="margin: 10px 5px">Orange Seat Share: </p>
         </div>
       </div>
+      <p><i>Note: Outcome metrics only display when there are 10 districts of size 10 each.</i></p>
       <div style="margin:100px">
         <h4>About the metrics</h4>
-          <p><b>Complete</b>: Is every unit assigned?</p>
-          <p><b>Max Pop Deviation</b>: Ideal “population” is 10 units. What’s the most any district deviates from this? (example: a district that has 12 units deviates by 20% from ideal size.)</p>
-          <p><b>Contiguous</b>: Is every district connected?  (Could a chess rook visit the whole district?)</p>
-          <p><b>Average PoPo</b>: What’s the average Polsby-Popper score?  (The Polsby-Popper score of a district is 4πA/P^2.)</p>
-          <p><b>Cut Edges</b>: How many pairs of neighboring units are in different districts?</p>
-          <p><b>Pink Majority Districts</b>: How many districts have more than half pink squares?</p>
-          <p><b>Orange Majority Districts</b>: Likewise for orange.</p>
-          <p><b>Tied Districts</b>: How many districts have an equal split between pink and orange?</p>
-          <p><b>Competitive Districts</b>: How many districts have both colors getting 40-60% of the votes?</p>
-          <p><b>Safe Seats</b>: How many districts have one color with 80-100% of the vote?</p>
-          <p><b>Orange Seat Share</b>: If orange gets full credit for a majority district and half credit for a tie, what is their share of the 10 seats?</p>
+          <p style="margin: 10px 5px"><b>Complete</b>: Is every unit assigned?</p>
+          <p style="margin: 10px 5px"><b>Max Pop Deviation</b>: Ideal “population” is 10 units. What’s the most any district deviates from this? (example: a district that has 12 units deviates by 20% from ideal size.)</p>
+          <p style="margin: 10px 5px"><b>Contiguous</b>: Is every district connected?  (Could a chess rook visit the whole district?)</p>
+          <p style="margin: 10px 5px"><b>Average PoPo</b>: What’s the average Polsby-Popper score?  (The Polsby-Popper score of a district is 4πA/P<sup>2</sup>.)</p>
+          <p style="margin: 10px 5px"><b>Cut Edges</b>: How many pairs of neighboring units are in different districts?</p>
+          <p style="margin: 10px 5px"><b>Pink Majority Districts</b>: How many districts have more than half pink squares?</p>
+          <p style="margin: 10px 5px"><b>Orange Majority Districts</b>: Likewise for orange.</p>
+          <p style="margin: 10px 5px"><b>Tied Districts</b>: How many districts have an equal split between pink and orange?</p>
+          <p style="margin: 10px 5px"><b>Competitive Districts</b>: How many districts have both colors getting 40-60% of the votes?</p>
+          <p style="margin: 10px 5px"><b>Safe Seats</b>: How many districts have one color with 80-100% of the vote?</p>
+          <p style="margin: 10px 5px"><b>Orange Seat Share</b>: If orange gets full credit for a majority district and half credit for a tie, what is their share of the 10 seats?</p>
       </div>
     </div>
   </main>

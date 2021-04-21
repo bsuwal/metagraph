@@ -625,6 +625,55 @@ var downloadButton = d3.select("#download").on("click", function(d) {
 });
 
 var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
+    // initialize and populate districts
+    districts = []
+    for (let i = 0; i < square_side; i++) {
+      districts.push([])
+    }
+    for (let i = 0; i < square_side * square_side; i++) {
+      if (curr_plan[i]-1 < 0) {
+        continue;
+      }
+      districts[curr_plan[i]-1].push(i)
+    }
+
+    // complete
+    assigned = 0
+    for (let i = 0; i < square_side; i++) {
+      assigned += districts[i].length
+    }
+    if (assigned == square_side * square_side) {
+      document.getElementById("complete").innerHTML = "Complete: Yes";
+    } else {
+      document.getElementById("complete").innerHTML = "Complete: No";
+    }
+
+    // max pop deviation
+    max_pop_dev= max_pop_deviation(districts)
+    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: " + max_pop_dev;
+
+    //popo
+    perims = perimeters(districts);
+    popos = []
+    for (let i = 0; i < square_side; i++) {
+      popos.push(4 * Math.PI * square_side / (perims[i] ** 2))
+    }
+    avg_popo = popos.reduce((a, b) => a + b, 0) / popos.length;
+    document.getElementById("popo_avg").innerHTML = "Average PoPo: " + avg_popo.toFixed(3);
+
+    // contiguity
+    contiguitys = []
+    for (let i = 0; i < square_side; i++) {
+      contiguitys.push(contiguous(districts[i]))
+    }
+
+    if (contiguitys.reduce((a, b) => a + b, 0) == square_side) {
+      contiguous_ans = "Yes";
+    } else {
+      contiguous_ans = "No";
+    }
+    document.getElementById("contiguity").innerHTML = "Contiguous: " + contiguous_ans;
+
     // cut edges
     num_cut_edges = 0
     dists = new Set()
@@ -637,32 +686,25 @@ var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
       dists.add(curr_plan[edge[1]]);
     }
     if (dists.size != square_side) {
-        document.getElementById("complete").innerHTML = "Complete: No";
         document.getElementById("ce").innerHTML = "Cut-Edges: N/A";
+        return
+    }
+    else {
+        document.getElementById("ce").innerHTML = "Cut-Edges: " + num_cut_edges;
+    }
+
+    for (let i = 0; i < square_side; i++) {
+      if (districts[i].length != square_side) {
         document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: N/A";
         document.getElementById("tied_seats").innerHTML = "Tied Districts: N/A";
         document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: N/A";
         document.getElementById("orange_score").innerHTML = "Orange Seat Share: N/A";
         document.getElementById("competitive_seats").innerHTML = "Competitive Districts: N/A";
         document.getElementById("safe_seats").innerHTML = "Safe Districts: N/A";
-        document.getElementById("popo_avg").innerHTML = "Average PoPo: N/A";
-        document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: N/A";
-        document.getElementById("contiguity").innerHTML = "Contiguous: N/A";
         return
-    }
-    else {
-        document.getElementById("complete").innerHTML = "Complete: Yes";
-        document.getElementById("ce").innerHTML = "Cut-Edges: " + num_cut_edges;
+      }
     }
 
-    // initialize and populate districts
-    districts = []
-    for (let i = 0; i < square_side; i++) {
-      districts.push([])
-    }
-    for (let i = 0; i < square_side * square_side; i++) {
-      districts[curr_plan[i]-1].push(i)
-    }
 
     // orange seats
     orange_seats = 0
@@ -693,32 +735,13 @@ var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
         safe_seats += 1
       }
     }
-
-    perims = perimeters(districts);
-    popos = []
-    for (let i = 0; i < square_side; i++) {
-      popos.push(4 * Math.PI * square_side / (perims[i] ** 2))
-    }
-    avg_popo = popos.reduce((a, b) => a + b, 0) / popos.length
-
-    // max pop deviation
-    max_pop_dev= max_pop_deviation(districts)
-
-    // contiguity
-    contiguitys = []
-    for (let i = 0; i < square_side; i++) {
-      contiguitys.push(contiguous(districts[i]))
-    }
-
     document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: " + orange_seats;
     document.getElementById("tied_seats").innerHTML = "Tied Districts: " + tied_seats;
     document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: " + pink_seats;
     document.getElementById("orange_score").innerHTML = "Orange Seat Share: " + parseFloat(orange_seats + tied_seats * 0.5);
     document.getElementById("competitive_seats").innerHTML = "Competitive Districts: " + competitive_seats;
     document.getElementById("safe_seats").innerHTML = "Safe Districts: " + safe_seats;
-    document.getElementById("popo_avg").innerHTML = "Average PoPo: " + avg_popo.toFixed(3);
-    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: " + max_pop_dev;
-    document.getElementById("contiguity").innerHTML = "Contiguous: " + (contiguitys.reduce((a, b) => a + b, 0) == square_side);
+
 });
 
 function exportToJsonFile(jsonData) {
