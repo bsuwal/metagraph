@@ -608,15 +608,15 @@ var clearDButton = d3.select("#clear-d").on("click", function(d) {
     grid_borders();
     document.getElementById("complete").innerHTML = "Complete: No";
     document.getElementById("ce").innerHTML = "Cut-Edges: N/A";
-    document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: ";
-    document.getElementById("tied_seats").innerHTML = "Tied Districts: ";
-    document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: ";
-    document.getElementById("orange_score").innerHTML = "Orange Seat Share: ";
-    document.getElementById("competitive_seats").innerHTML = "Competitive Districts: ";
-    document.getElementById("safe_seats").innerHTML = "Safe Districts: ";
-    document.getElementById("popo_avg").innerHTML = "Average PoPo: ";
-    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: ";
-    document.getElementById("contiguity").innerHTML = "Contiguous: ";
+    document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: N/A";
+    document.getElementById("tied_seats").innerHTML = "Tied Districts: N/A";
+    document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: N/A";
+    document.getElementById("orange_score").innerHTML = "Orange Seat Share: N/A";
+    document.getElementById("competitive_seats").innerHTML = "Competitive Districts: N/A";
+    document.getElementById("safe_seats").innerHTML = "Safe Districts: N/A";
+    document.getElementById("popo_avg").innerHTML = "Average PoPo: N/A";
+    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: N/A";
+    document.getElementById("contiguity").innerHTML = "Contiguous: N/A";
 });
 
 var downloadButton = d3.select("#download").on("click", function(d) {
