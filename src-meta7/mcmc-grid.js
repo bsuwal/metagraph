@@ -650,7 +650,7 @@ var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
 
     // max pop deviation
     max_pop_dev= max_pop_deviation(districts)
-    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: " + max_pop_dev;
+    document.getElementById("max_pop_dev").innerHTML = "Max Pop Deviation: " + max_pop_dev * 100 + "%";
 
     //popo
     perims = perimeters(districts);
