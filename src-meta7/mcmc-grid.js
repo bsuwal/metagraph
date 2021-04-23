@@ -738,7 +738,7 @@ var computeCutEdgesButton = d3.select("#evaluate").on("click", function(d) {
     document.getElementById("orange_seats").innerHTML = "Orange Majority Districts: " + orange_seats;
     document.getElementById("tied_seats").innerHTML = "Tied Districts: " + tied_seats;
     document.getElementById("pink_seats").innerHTML = "Pink Majority Districts: " + pink_seats;
-    document.getElementById("orange_score").innerHTML = "Orange Seat Share: " + parseFloat(orange_seats + tied_seats * 0.5);
+    document.getElementById("orange_score").innerHTML = "Orange Seat Share: " + parseFloat(orange_seats + tied_seats * 0.5) + " / 10";
     document.getElementById("competitive_seats").innerHTML = "Competitive Districts: " + competitive_seats;
     document.getElementById("safe_seats").innerHTML = "Safe Districts: " + safe_seats;
 
